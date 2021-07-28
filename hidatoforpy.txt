@@ -1,0 +1,29 @@
+% Answer Set Programming Hidato Solver
+% by Umejiaku Afamefuna Promise
+% Department of Computer Science
+% Texas Tech University
+% E-mail: Afamefuna.P.Umejiaku@ttu.edu
+% Last updated 7/7/2019
+%
+% This program solves Hidato puzzles using Answer Set Programming.  It expects, 
+% as input, a file containing the initial values of the puzzle as atoms of the 
+% form "pos(N,X,Y)." which indicate that initially value "N" is in row "X",  
+% column "Y".  When the input file is passed, along with this file, to an Answer 
+% Set Solver, the resulting Answer Sets (if any exist), will each contain 81  
+% "pos" atoms which indicate the values to be placed in each of the 81 cells
+% cells of the Hidato to form a valid solution (these include the input values). 
+%
+% This code is specifically designed for the family of solvers which use the 
+% input language of lparse.  This code was last tested using clingo 3.0.3.
+
+%num(1..N). 	% total number of possibe entries gotten from the temp file
+%xaxis(1..X). 	% number on xaxis gotten from the temp file
+%yaxis(1..Y). 	% number on yaxix gotten from the temp file
+1{pos(N,X,Y):num(N)}1:-xaxis(X),yaxis(Y).
+:-pos(N,X,Y),pos(N,A,Y),X!=A.
+:-pos(N,X,Y),pos(N,X,B),Y!=B.
+:-pos(N,X,Y),pos(C,A,B),N==C,X!=A,Y!=B.
+:-pos(N,X,Y),pos(C,A,B),N==C+1,X==A+1,Y==B+1.
+con(X,Y,X1,Y1):-xaxis(X),xaxis(X1),yaxis(Y),yaxis(Y1),X-X1<=1,X-X1>=-1,Y-Y1<=1,Y-Y1>=-1.
+:-pos (N,X,Y), pos(N+1,X1,Y1),num(N),num(N+1), not con(X,Y,X1,Y1).
+#show pos/3.
